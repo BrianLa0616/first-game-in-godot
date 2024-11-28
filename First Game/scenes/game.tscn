@@ -349,3 +349,5 @@ text = "Great job!"
 horizontal_alignment = 1
 
 [node name="CanvasLayer" parent="." instance=ExtResource("10_y1lmt")]
+
+[connection signal="child_entered_tree" from="CanvasLayer" to="Player" method="_on_canvas_layer_child_entered_tree"]

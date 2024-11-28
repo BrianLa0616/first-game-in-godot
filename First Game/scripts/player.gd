@@ -8,8 +8,13 @@ const JUMP_VELOCITY = -300.0
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 @onready var animated_sprite = $AnimatedSprite2D
+@onready var canvas_layer: CanvasLayer = $"../CanvasLayer"
+
 
 func _physics_process(delta):
+	var line_edit = canvas_layer.get_node("LineEdit")
+	if line_edit.has_focus():
+		return
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y += gravity * delta
