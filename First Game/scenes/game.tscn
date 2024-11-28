@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://cuv4vme4rwno0"]
+[gd_scene load_steps=19 format=3 uid="uid://cuv4vme4rwno0"]
 
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_l4ihi"]
 [ext_resource type="PackedScene" uid="uid://dqnaqj8yb6hwd" path="res://scenes/player.tscn" id="1_rbmkf"]
@@ -9,14 +9,10 @@
 [ext_resource type="PackedScene" uid="uid://dtrbka1ef726o" path="res://scenes/killzone.tscn" id="5_x8euu"]
 [ext_resource type="PackedScene" uid="uid://d2w2i5h0lhc6l" path="res://scenes/slime.tscn" id="6_l0s6b"]
 [ext_resource type="FontFile" uid="uid://dbjl1e6kdxpl6" path="res://assets/fonts/PixelOperator8.ttf" id="7_8cblx"]
+[ext_resource type="Script" path="res://scenes/game_number_label.gd" id="10_n64dj"]
 
 [sub_resource type="GDScript" id="GDScript_8v3eh"]
 script/source = "extends Node2D
-
-
-func _on_next_level_button_pressed() -> void:
-	#get_tree().change_scene_to_file(\"res://scenes/game2.tscn\")
-	SceneSwitcher.switch_scene(\"res://scenes/game2.tscn\")
 "
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ashvg"]
@@ -360,6 +356,14 @@ theme_override_fonts/font = ExtResource("7_8cblx")
 theme_override_font_sizes/font_size = 8
 text = "Great job!"
 horizontal_alignment = 1
+
+[node name="GameNumberLabel" type="RichTextLabel" parent="Labels"]
+offset_left = -35.0
+offset_top = 23.0
+offset_right = 97.0
+offset_bottom = 63.0
+text = "Game number "
+script = ExtResource("10_n64dj")
 
 [node name="NextLevelButton" type="Button" parent="."]
 offset_left = 627.0

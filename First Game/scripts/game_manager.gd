@@ -10,8 +10,7 @@ func add_point():
 
 func _on_next_level_button_pressed() -> void:
 	# Define the source and destination paths
-	var root = get_tree().root
-	var currentGameIndex = root.get_child_count() - 2
+	var currentGameIndex = SceneSwitcher.gameNumber
 	var nextGameIndex = currentGameIndex + 1
 	var source_scene_path
 	if (currentGameIndex == 1):
