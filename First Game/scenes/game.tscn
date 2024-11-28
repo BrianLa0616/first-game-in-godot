@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cuv4vme4rwno0"]
+[gd_scene load_steps= format=3 uid="uid://cuv4vme4rwno0"]
 
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_l4ihi"]
 [ext_resource type="PackedScene" uid="uid://dqnaqj8yb6hwd" path="res://scenes/player.tscn" id="1_rbmkf"]
@@ -10,12 +10,9 @@
 [ext_resource type="PackedScene" uid="uid://d2w2i5h0lhc6l" path="res://scenes/slime.tscn" id="6_l0s6b"]
 [ext_resource type="FontFile" uid="uid://dbjl1e6kdxpl6" path="res://assets/fonts/PixelOperator8.ttf" id="7_8cblx"]
 [ext_resource type="Script" path="res://scenes/game_number_label.gd" id="10_n64dj"]
-
-[sub_resource type="GDScript" id="GDScript_8v3eh"]
-script/source = "extends Node2D
-"
 [ext_resource type="PackedScene" uid="uid://bhom7biwekj6p" path="res://scenes/userinput.tscn" id="10_y1lmt"]
 
+[sub_resource type="GDScript" id="GDScript_8v3eh"]
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ashvg"]
 texture = ExtResource("2_r1crl")
 0:0/0 = 0
