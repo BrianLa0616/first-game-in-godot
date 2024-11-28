@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://bhom7biwekj6p"]
+
+[ext_resource type="Script" path="res://scripts/userinput.gd" id="1_7djvi"]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+script = ExtResource("1_7djvi")
+
+[node name="LineEdit" type="LineEdit" parent="."]
+offset_right = 287.0
+offset_bottom = 148.0
