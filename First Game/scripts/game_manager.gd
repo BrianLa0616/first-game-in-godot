@@ -61,12 +61,8 @@ func _on_LineEdit_text_entered(new_text: String) -> void:
 		"Content-Type: application/json",
 		"Authorization: Bearer " + API_KEY
 	]
-	
-	print("prepareing to make request")
 
 	http_request.request(url, headers, HTTPClient.METHOD_POST, request_body)
-	
-	print("request has been made")
 	
 func load_env() -> String:
 	var file = FileAccess.open("res://.env", FileAccess.READ)
@@ -76,7 +72,6 @@ func load_env() -> String:
 	return ""
 
 func _on_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
-	print("request completed")
 	var json = JSON.new()
 	json.parse(body.get_string_from_utf8())
 	var response = json.get_data()

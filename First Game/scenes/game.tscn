@@ -387,3 +387,4 @@ offset_bottom = -130.0
 [connection signal="pressed" from="NextLevelButton" to="GameManager" method="_on_next_level_button_pressed"]
 [connection signal="child_entered_tree" from="CanvasLayer" to="Player" method="_on_canvas_layer_child_entered_tree"]
 [connection signal="text_submitted" from="LineEdit" to="GameManager" method="_on_line_edit_text_submitted"]
+[connection signal="request_completed" from="LineEdit/HTTPRequest" to="GameManager" method="_on_http_request_request_completed"]
