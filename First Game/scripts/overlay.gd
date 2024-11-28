@@ -8,15 +8,14 @@ extends CanvasLayer
 var url = "https://api.openai.com/v1/chat/completions"
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	line_edit.text_submitted.connect(_on_LineEdit_text_entered)
+	#line_edit.text_submitted.connect(_on_LineEdit_text_entered)
 	pass # Replace with function body.
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
 	
-func _on_LineEdit_text_entered(new_text: String) -> void:
+func _on_line_edit_text_submitted(new_text: String) -> void:
 	var API_KEY = load_env()
 	var request_body = JSON.new().stringify({
 		"model": "gpt-3.5-turbo",  # Change to "gpt-4" if desired
@@ -33,9 +32,6 @@ func _on_LineEdit_text_entered(new_text: String) -> void:
 	]
 
 	http_request.request(url, headers, HTTPClient.METHOD_POST, request_body)
-
-	
- 
 	
 func load_env() -> String:
 	var file = FileAccess.open("res://.env", FileAccess.READ)
@@ -51,8 +47,4 @@ func _on_http_request_request_completed(result: int, response_code: int, headers
 	var response = json.get_data()
 	var message = response["choices"][0]["message"]["content"]
 	print(message)
-	pass # Replace with function body.
-
-
-func _on_text_edit_focus_entered() -> void:
 	pass # Replace with function body.

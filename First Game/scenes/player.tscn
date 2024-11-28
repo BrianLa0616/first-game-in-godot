@@ -185,3 +185,9 @@ autoplay = "idle"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -5)
 shape = SubResource("CircleShape2D_bvcm0")
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(16, -6)
+
+[node name="Marker2D2" type="Marker2D" parent="."]
+position = Vector2(-17, -6)
