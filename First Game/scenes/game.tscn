@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cuv4vme4rwno0"]
+[gd_scene load_steps=20 format=3 uid="uid://cuv4vme4rwno0"]
 
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_l4ihi"]
 [ext_resource type="PackedScene" uid="uid://dqnaqj8yb6hwd" path="res://scenes/player.tscn" id="1_rbmkf"]
@@ -9,8 +9,10 @@
 [ext_resource type="PackedScene" uid="uid://dtrbka1ef726o" path="res://scenes/killzone.tscn" id="5_x8euu"]
 [ext_resource type="PackedScene" uid="uid://d2w2i5h0lhc6l" path="res://scenes/slime.tscn" id="6_l0s6b"]
 [ext_resource type="FontFile" uid="uid://dbjl1e6kdxpl6" path="res://assets/fonts/PixelOperator8.ttf" id="7_8cblx"]
+[ext_resource type="Script" path="res://scenes/game_number_label.gd" id="10_n64dj"]
 [ext_resource type="PackedScene" uid="uid://bhom7biwekj6p" path="res://scenes/overlay.tscn" id="10_y1lmt"]
 
+[sub_resource type="GDScript" id="GDScript_8v3eh"]
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ashvg"]
 texture = ExtResource("2_r1crl")
 0:0/0 = 0
@@ -217,7 +219,12 @@ _data = {
 "move": SubResource("Animation_bm7kf")
 }
 
+[sub_resource type="GDScript" id="GDScript_aeyvs"]
+script/source = "extends Button
+"
+
 [node name="Game" type="Node2D"]
+script = SubResource("GDScript_8v3eh")
 
 [node name="GameManager" type="Node" parent="."]
 unique_name_in_owner = true
@@ -336,6 +343,35 @@ theme_override_colors/font_color = Color(0.0980392, 0.313726, 0.752941, 1)
 theme_override_fonts/font = ExtResource("7_8cblx")
 theme_override_font_sizes/font_size = 8
 text = "Almost there..."
+
+[node name="Label4" type="Label" parent="Labels"]
+offset_left = 520.0
+offset_top = -163.0
+offset_right = 616.0
+offset_bottom = -145.0
+theme_override_colors/font_color = Color(0.0980392, 0.313726, 0.752941, 1)
+theme_override_fonts/font = ExtResource("7_8cblx")
+theme_override_font_sizes/font_size = 8
+text = "Great job!"
+horizontal_alignment = 1
+
+[node name="GameNumberLabel" type="RichTextLabel" parent="Labels"]
+offset_left = -35.0
+offset_top = 23.0
+offset_right = 97.0
+offset_bottom = 63.0
+text = "Game number "
+script = ExtResource("10_n64dj")
+
+[node name="NextLevelButton" type="Button" parent="."]
+offset_left = 627.0
+offset_top = -157.0
+offset_right = 791.0
+offset_bottom = -126.0
+text = "Generate next level!"
+script = SubResource("GDScript_aeyvs")
+
+[connection signal="pressed" from="NextLevelButton" to="GameManager" method="_on_next_level_button_pressed"]
 
 [node name="CanvasLayer" parent="." instance=ExtResource("10_y1lmt")]
 
