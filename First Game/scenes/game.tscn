@@ -372,7 +372,6 @@ offset_bottom = -126.0
 text = "Generate next level!"
 script = SubResource("GDScript_aeyvs")
 
-[node name="CanvasLayer" parent="." instance=ExtResource("10_y1lmt")]
+[node name="Overlay" parent="." instance=ExtResource("10_y1lmt")]
 
 [connection signal="pressed" from="NextLevelButton" to="GameManager" method="_on_next_level_button_pressed"]
-[connection signal="child_entered_tree" from="CanvasLayer" to="Player" method="_on_canvas_layer_child_entered_tree"]

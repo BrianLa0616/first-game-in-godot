@@ -7,7 +7,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u4gcp"]
 bg_color = Color(0.6, 0.6, 0.6, 0.784314)
 
-[node name="CanvasLayer" type="CanvasLayer"]
+[node name="Overlay" type="CanvasLayer"]
 script = ExtResource("1_7djvi")
 
 [node name="LineEdit" type="LineEdit" parent="."]
