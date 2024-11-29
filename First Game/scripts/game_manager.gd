@@ -5,11 +5,13 @@ var score = 0
 @onready var score_label = $ScoreLabel
 @onready var line_edit: LineEdit = $"../LineEdit"
 @onready var http_request: HTTPRequest = $"../LineEdit/HTTPRequest"
+@onready var next_level_button: Button = $"../NextLevelButton"
 
 var url = "https://api.openai.com/v1/chat/completions"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	next_level_button.pressed.connect(_on_next_level_button_pressed)
 	line_edit.text_submitted.connect(_on_LineEdit_text_entered)
 	
 func add_point():
@@ -48,13 +50,42 @@ func _on_next_level_button_pressed() -> void:
 	
 func _on_LineEdit_text_entered(new_text: String) -> void:
 	var API_KEY = load_env()
+	
+	var currentGameIndex = SceneSwitcher.gameNumber
+	var nextGameIndex = currentGameIndex + 1
+	var source_scene_path
+	if (currentGameIndex == 1):
+		source_scene_path = "res://scenes/game.tscn"
+	else:
+		source_scene_path = "res://scenes/game" + str(currentGameIndex) + ".tscn"
+		
+	# Load the source scene
+	var source_scene = ResourceLoader.load(source_scene_path)
+	if source_scene == null:
+		push_error("Source scene not found: %s" % source_scene_path)
+		return
+	
+	var file = FileAccess.open(source_scene_path, FileAccess.ModeFlags.READ)
+	if file == null:
+		push_error("Failed to open source scene file: %s" % source_scene_path)
+		return
+	
+	var source_scene_text = file.get_as_text()
+	file.close()
+
 	var request_body = JSON.new().stringify({
-		"model": "gpt-3.5-turbo",  # Change to "gpt-4" if desired
+		"model": "gpt-4",
 		"messages": [
 			{"role": "system", "content": "An expert coder in godot 4.0"},
-			{"role": "user", "content": new_text}
+			{"role": "user", "content": "The game.tscn file for my current scene is provided below."},
+			{"role": "user", "content": source_scene_text},
+			{"role": "user", "content": "Use the following text prompt to make minor additions/changes 
+			to the game.tscn file, ensuring correct syntax and that we follow godot 4.0 conventions."},
+			{"role": "user", "content": new_text},
+			{"role": "user", "content": "Now provide the correct game.tscn file based off the prompt 
+			to reflect the updated scene."},
 		],
-		"temperature": 0.7
+		"temperature": 0.0
 	})
 
 	var headers = [
@@ -74,6 +105,26 @@ func load_env() -> String:
 func _on_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	var json = JSON.new()
 	json.parse(body.get_string_from_utf8())
-	var response = json.get_data()
+	var response = json.get_data()	
+	print(response)
 	var message = response["choices"][0]["message"]["content"]
-	print(message)
+	
+	var next_game_index = SceneSwitcher.gameNumber + 1
+	var new_scene_path = "res://scenes/game" + str(next_game_index) + ".tscn"
+
+	# Save generated code to the new .tscn file
+	var file = FileAccess.open(new_scene_path, FileAccess.ModeFlags.WRITE)
+	if file == null:
+		push_error("Failed to open file for writing: %s" % new_scene_path)
+		return
+	
+	file.store_string(message)
+	file.close()
+	print_debug("New scene saved to: ", new_scene_path)
+
+	# Switch to the newly created scene
+	SceneSwitcher.switch_scene(new_scene_path)
+
+
+func _on_line_edit_focus_entered() -> void:
+	pass
