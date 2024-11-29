@@ -6,6 +6,10 @@ var score = 0
 @onready var line_edit: LineEdit = $"../LineEdit"
 @onready var http_request: HTTPRequest = $"../LineEdit/HTTPRequest"
 @onready var next_level_button: Button = $"../NextLevelButton"
+@onready var overlay: CanvasLayer = $"../Overlay"
+@onready var player: CharacterBody2D = $"../Player"
+
+const enemyPath = preload("res://scenes/slime.tscn")
 
 var url = "https://api.openai.com/v1/chat/completions"
 
@@ -13,12 +17,22 @@ var mostRecentResult
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	overlay.connect("request_completed", Callable(self, "_on_request_completed"))
 	next_level_button.pressed.connect(_on_next_level_button_pressed)
 	line_edit.text_submitted.connect(_on_LineEdit_text_entered)
 	
 func add_point():
 	score += 1
 	score_label.text = "You collected " + str(score) + " coins."
+
+func _on_request_completed(message: Array) -> void:	
+	var result = overlay.closest_match(message)
+	if result[0] == 0 and result[1] < .5:
+		player.shoot()
+	if result[0] == 2 and result[1] < .5:
+		var enemy = enemyPath.instantiate()
+		get_parent().add_child(enemy)
+
 
 func _on_next_level_button_pressed() -> void:
 	# Define the source and destination paths
