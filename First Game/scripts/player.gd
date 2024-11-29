@@ -13,8 +13,7 @@ const projectilePath = preload('res://scenes/projectile.tscn')
 @onready var next_stage_line_edit: LineEdit = $"../LineEdit"
 
 func _ready() -> void:
-	overlay.connect("request_completed", Callable(self, "_on_request_completed"))
-
+	pass
 func _physics_process(delta):
 	var line_edit = overlay.get_node("LineEdit")
 	if line_edit.has_focus():
@@ -57,15 +56,13 @@ func _physics_process(delta):
 
 	move_and_slide()
 	
-func shoot():
+func shoot(imagePath="res://assets/sprites/fire.webp"):
 	var projectile = projectilePath.instantiate()
-	get_parent().add_child(projectile)
 	projectile.position = $Marker2D.global_position if not animated_sprite.flip_h else $Marker2D2.global_position
 	var direction = Vector2.RIGHT if not animated_sprite.flip_h else Vector2.LEFT
-	
 	projectile.set_direction(direction)
 	
-func _on_request_completed(message: Array) -> void:	
-	var result = overlay.closest_match(message)
-	if result[0] == 0 and result[1] < .4:
-		shoot()
+	var image = load(imagePath)
+	projectile.get_node("Sprite2D").texture = image
+	get_parent().add_child(projectile)
+	

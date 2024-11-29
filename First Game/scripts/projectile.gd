@@ -12,7 +12,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	velocity = direction * speed
 	distance_traveled += speed * delta
-	if distance_traveled > 100:
+	if distance_traveled > 200:
 		queue_free()
 	move_and_slide()
 	pass

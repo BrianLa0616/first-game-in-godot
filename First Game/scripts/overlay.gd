@@ -116,6 +116,8 @@ func closest_match(query) -> Array:
 		if difference < best_difference:
 			best_index = i
 			best_difference = difference
+	print(best_index)
+	print(best_difference)
 	return [best_index, best_difference]
 	
 	
