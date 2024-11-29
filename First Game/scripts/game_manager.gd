@@ -9,6 +9,8 @@ var score = 0
 
 var url = "https://api.openai.com/v1/chat/completions"
 
+var mostRecentResult
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	next_level_button.pressed.connect(_on_next_level_button_pressed)
@@ -48,6 +50,32 @@ func _on_next_level_button_pressed() -> void:
 	# Switch to the duplicated scene
 	SceneSwitcher.switch_scene(destination_scene_path)
 	
+func split_game_scene_text(source_scene_text: String) -> Dictionary:
+	var start_marker = "[node name=\"Game\" type=\"Node2D\"]"
+	var end_marker = "[node name=\"Coins\" type=\"Node\" parent=\".\"]"
+	
+	var start_pos = source_scene_text.find(start_marker)
+	if start_pos == -1:
+		push_error("Start marker not found.")
+		return {}
+		
+	var end_pos = source_scene_text.find(end_marker, start_pos)
+	if end_pos == -1:
+		push_error("End marker not found.")
+		return {}
+		
+	end_pos += end_marker.length()
+	
+	var before_text = source_scene_text.substr(0, start_pos)
+	var middle_text = source_scene_text.substr(start_pos, end_pos - start_pos)
+	var after_text = source_scene_text.substr(end_pos)
+	
+	return {
+		"before": before_text,
+		"middle": middle_text,
+		"after": after_text
+	}
+	
 func _on_LineEdit_text_entered(new_text: String) -> void:
 	var API_KEY = load_env()
 	
@@ -72,18 +100,23 @@ func _on_LineEdit_text_entered(new_text: String) -> void:
 	
 	var source_scene_text = file.get_as_text()
 	file.close()
+	
+	var result = split_game_scene_text(source_scene_text)
+	
+	mostRecentResult = result
 
 	var request_body = JSON.new().stringify({
 		"model": "gpt-4",
 		"messages": [
-			{"role": "system", "content": "An expert coder in godot 4.0"},
-			{"role": "user", "content": "The game.tscn file for my current scene is provided below."},
-			{"role": "user", "content": source_scene_text},
+			{"role": "system", "content": "An expert coder in Godot 4.0"},
+			{"role": "user", "content": "The nodes for the game.tscn file for my current scene is provided below."},
+			{"role": "user", "content": result["after"]},
 			{"role": "user", "content": "Use the following text prompt to make minor additions/changes 
-			to the game.tscn file, ensuring correct syntax and that we follow godot 4.0 conventions."},
+			to the the nodes of my game.tscn file, ensuring correct syntax and that we follow Godot 4.0 conventions."},
 			{"role": "user", "content": new_text},
-			{"role": "user", "content": "Now provide the correct game.tscn file based off the prompt 
-			to reflect the updated scene."},
+			{"role": "user", "content": "Now provide the correct nodes of the game.tscn file based off the prompt 
+			to reflect the updated scene. Make sure to spawn any nodes roughly in the vicinity of existing nodes. 
+			Make sure to provide ONLY .tscn format code and none of your words as I am parsing your output as code only."},
 		],
 		"temperature": 0.0
 	})
@@ -106,8 +139,10 @@ func _on_http_request_request_completed(result: int, response_code: int, headers
 	var json = JSON.new()
 	json.parse(body.get_string_from_utf8())
 	var response = json.get_data()	
-	print(response)
 	var message = response["choices"][0]["message"]["content"]
+	
+	print("openai output")
+	print(message)
 	
 	var next_game_index = SceneSwitcher.gameNumber + 1
 	var new_scene_path = "res://scenes/game" + str(next_game_index) + ".tscn"
@@ -118,7 +153,9 @@ func _on_http_request_request_completed(result: int, response_code: int, headers
 		push_error("Failed to open file for writing: %s" % new_scene_path)
 		return
 	
-	file.store_string(message)
+	var new_scene_text = mostRecentResult["before"] + mostRecentResult["middle"] + mostRecentResult["after"] + message
+
+	file.store_string(new_scene_text)
 	file.close()
 	print_debug("New scene saved to: ", new_scene_path)
 
