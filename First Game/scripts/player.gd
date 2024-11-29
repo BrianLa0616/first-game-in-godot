@@ -10,6 +10,7 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 @onready var overlay: CanvasLayer = $"../Overlay"
 
 const projectilePath = preload('res://scenes/projectile.tscn')
+@onready var next_stage_line_edit: LineEdit = $"../LineEdit"
 
 func _ready() -> void:
 	overlay.connect("request_completed", Callable(self, "_on_request_completed"))
@@ -17,6 +18,8 @@ func _ready() -> void:
 func _physics_process(delta):
 	var line_edit = overlay.get_node("LineEdit")
 	if line_edit.has_focus():
+		return
+	if next_stage_line_edit.has_focus():
 		return
 	# Add the gravity.
 	if not is_on_floor():
