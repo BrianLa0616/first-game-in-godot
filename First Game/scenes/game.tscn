@@ -1,9 +1,10 @@
-[gd_scene load_steps=20 format=3 uid="uid://cuv4vme4rwno0"]
+[gd_scene load_steps=21 format=3 uid="uid://cuv4vme4rwno0"]
 
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_l4ihi"]
 [ext_resource type="PackedScene" uid="uid://dqnaqj8yb6hwd" path="res://scenes/player.tscn" id="1_rbmkf"]
 [ext_resource type="FontFile" uid="uid://c53kogtyjwsss" path="res://assets/fonts/PixelOperator8-Bold.ttf" id="2_nlliu"]
 [ext_resource type="Texture2D" uid="uid://d0q2g65ahgok" path="res://assets/sprites/world_tileset.png" id="2_r1crl"]
+[ext_resource type="Script" path="res://scenes/world_generation.gd" id="3_blpld"]
 [ext_resource type="PackedScene" uid="uid://bgv5v2fxqlswe" path="res://scenes/platform.tscn" id="3_cmfc3"]
 [ext_resource type="PackedScene" uid="uid://pqp5qaw561fr" path="res://scenes/coin.tscn" id="4_28cek"]
 [ext_resource type="PackedScene" uid="uid://dtrbka1ef726o" path="res://scenes/killzone.tscn" id="5_x8euu"]
@@ -224,6 +225,42 @@ _data = {
 
 [sub_resource type="GDScript" id="GDScript_aeyvs"]
 script/source = "extends Button
+
+@onready var next_level_button: Button = $\"../NextLevelButton\"
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	next_level_button.pressed.connect(_on_next_level_button_pressed)
+
+func _on_next_level_button_pressed() -> void:
+	# Define the source and destination paths
+	var currentGameIndex = SceneSwitcher.gameNumber
+	var nextGameIndex = currentGameIndex + 1
+	var source_scene_path
+	if (currentGameIndex == 1):
+		source_scene_path = \"res://scenes/game.tscn\"
+	else:
+		source_scene_path = \"res://scenes/game\" + str(currentGameIndex) + \".tscn\"
+	
+	print_debug(\"currentGameIndex: \", currentGameIndex)
+	var destination_scene_path = \"res://scenes/game\" + str(nextGameIndex) + \".tscn\"
+	var current_scene_path = \"res://scenes/game\" + str(currentGameIndex) + \".tscn\"
+	
+	# Load the source scene
+	var source_scene = ResourceLoader.load(source_scene_path)
+	if source_scene == null:
+		push_error(\"Source scene not found: %s\" % source_scene_path)
+		return
+	
+	# Save the duplicated scene to the destination path
+	var save_result = ResourceSaver.save(source_scene, destination_scene_path)
+	if save_result != OK:
+		push_error(\"Failed to save duplicated scene: %s\" % destination_scene_path)
+		return
+	
+	print_debug(\"destination_scene_path: \", destination_scene_path)
+	# Switch to the duplicated scene
+	SceneSwitcher.switch_scene(destination_scene_path)
 "
 
 [node name="Game" type="Node2D"]
@@ -382,12 +419,15 @@ offset_top = 4.0
 offset_right = 53.0
 offset_bottom = 51.0
 
+[node name="HTTPRequest" type="HTTPRequest" parent="LineEdit"]
+
 [node name="Overlay" parent="." instance=ExtResource("10_y1lmt")]
 
-[node name="HTTPRequest" type="HTTPRequest" parent="LineEdit"]
+[node name="WorldGeneration" type="Node" parent="."]
+script = ExtResource("3_blpld")
 
 [connection signal="pressed" from="NextLevelButton" to="GameManager" method="_on_next_level_button_pressed"]
 [connection signal="child_entered_tree" from="CanvasLayer" to="Player" method="_on_canvas_layer_child_entered_tree"]
-[connection signal="focus_entered" from="LineEdit" to="GameManager" method="_on_line_edit_focus_entered"]
-[connection signal="text_submitted" from="LineEdit" to="GameManager" method="_on_line_edit_text_submitted"]
-[connection signal="request_completed" from="LineEdit/HTTPRequest" to="GameManager" method="_on_http_request_request_completed"]
+[connection signal="focus_entered" from="LineEdit" to="WorldGeneration" method="_on_line_edit_focus_entered"]
+[connection signal="text_submitted" from="LineEdit" to="WorldGeneration" method="_on_line_edit_text_submitted"]
+[connection signal="request_completed" from="LineEdit/HTTPRequest" to="WorldGeneration" method="_on_http_request_request_completed"]
