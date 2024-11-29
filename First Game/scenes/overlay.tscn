@@ -1,13 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://bhom7biwekj6p"]
 
-[ext_resource type="Script" path="res://scripts/userinput.gd" id="1_7djvi"]
+[ext_resource type="Script" path="res://scripts/overlay.gd" id="1_7djvi"]
 
 [sub_resource type="Theme" id="Theme_mf56b"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u4gcp"]
 bg_color = Color(0.6, 0.6, 0.6, 0.784314)
 
-[node name="CanvasLayer" type="CanvasLayer"]
+[node name="Overlay" type="CanvasLayer"]
 script = ExtResource("1_7djvi")
 
 [node name="LineEdit" type="LineEdit" parent="."]
@@ -19,5 +19,5 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_u4gcp")
 
 [node name="HTTPRequest" type="HTTPRequest" parent="LineEdit"]
 
-[connection signal="focus_entered" from="LineEdit" to="." method="_on_line_edit_focus_entered"]
+[connection signal="text_submitted" from="LineEdit" to="." method="_on_line_edit_text_submitted"]
 [connection signal="request_completed" from="LineEdit/HTTPRequest" to="." method="_on_http_request_request_completed"]
