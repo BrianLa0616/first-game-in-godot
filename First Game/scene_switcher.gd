@@ -1,6 +1,9 @@
 extends Node
 
+signal request_completed(response_data)
+
 var gameNumber = 1
+var scenePrompt = null
 
 var current_scene = null
 # Called when the node enters the scene tree for the first time.
@@ -15,7 +18,6 @@ func switch_scene(res_path):
 	
 func _deferred_switch_scene(res_path):
 	var treechildren = get_tree().root.get_children()
-	print_debug("scene swticher tree: ", treechildren)
 	var root = get_tree().root
 	current_scene.free()
 	var s = load(res_path)
@@ -23,5 +25,3 @@ func _deferred_switch_scene(res_path):
 	get_tree().root.add_child(current_scene)
 	get_tree().current_scene = current_scene
 	var newtreechildren = get_tree().root.get_children()
-	print_debug("new scene swticher tree: ", newtreechildren)
-	print_debug("res_path: ", res_path)
