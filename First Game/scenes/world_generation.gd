@@ -232,7 +232,7 @@ func _on_world_request_completed(message: Array) -> void:
 	elif result[0] == 1 and result[1] < .5:
 		# add more slimes
 		print("adding more slimes")
-		for i in range(20):
+		for i in range(10):
 			var enemy = enemyPath.instantiate()
 			enemy.position = Vector2(randf_range(15, 1000), randf_range(-100, 150))
 			get_parent().add_child.call_deferred(enemy)
