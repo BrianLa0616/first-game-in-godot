@@ -54,6 +54,8 @@ func _on_categorization_completed(message: Array) -> void:
 			get_parent().add_child(enemy)
 		"gameplay":
 			print("c")
+		"next level":
+			WorldGeneration._on_LineEdit_text_entered(message[1])
 		"none":
 			print("no matching functionality")
 

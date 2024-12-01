@@ -2,8 +2,7 @@ extends Node
 
 signal request_completed(response_data)
 
-@onready var line_edit: LineEdit = $"../LineEdit"
-@onready var http_request: HTTPRequest = $"../LineEdit/HTTPRequest"
+@onready var http_request: HTTPRequest = $HTTPRequest
 @onready var GameManager: Node = %GameManager
 @onready var player: CharacterBody2D = $"../Player"
 
@@ -18,7 +17,7 @@ var embeddingUrl = "https://api.openai.com/v1/embeddings"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	line_edit.text_submitted.connect(_on_LineEdit_text_entered)
+	pass
 
 func split_game_scene_text(source_scene_text: String) -> Dictionary:
 	var start_marker = "[node name=\"Game\" type=\"Node2D\"]"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://cuv4vme4rwno0"]
+[gd_scene load_steps=21 format=3 uid="uid://cuv4vme4rwno0"]
 
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_l4ihi"]
 [ext_resource type="PackedScene" uid="uid://dqnaqj8yb6hwd" path="res://scenes/player.tscn" id="1_rbmkf"]
@@ -12,7 +12,7 @@
 [ext_resource type="FontFile" uid="uid://dbjl1e6kdxpl6" path="res://assets/fonts/PixelOperator8.ttf" id="7_8cblx"]
 [ext_resource type="Script" path="res://scenes/game_number_label.gd" id="10_n64dj"]
 [ext_resource type="PackedScene" uid="uid://bhom7biwekj6p" path="res://scenes/overlay.tscn" id="10_y1lmt"]
-[ext_resource type="PackedScene" uid="uid://bspha5de30na5" path="res://scenes/open_ai.tscn" id="13_o2w3d"]
+[ext_resource type="PackedScene" uid="uid://di7f7fkw7oypm" path="res://scenes/open_ai.tscn" id="13_o2w3d"]
 
 [sub_resource type="GDScript" id="GDScript_8v3eh"]
 script/source = "extends Node2D
@@ -224,8 +224,6 @@ _data = {
 "move": SubResource("Animation_bm7kf")
 }
 
-[sub_resource type="GDScript" id="GDScript_aeyvs"]
-
 [node name="Game9" type="Node2D"]
 script = SubResource("GDScript_8v3eh")
 
@@ -366,33 +364,16 @@ offset_bottom = 63.0
 text = "Game number "
 script = ExtResource("10_n64dj")
 
-[node name="NextLevelButton" type="Button" parent="."]
-offset_left = -111.0
-offset_top = 53.0
-offset_right = 53.0
-offset_bottom = 84.0
-text = "Generate next level!"
-script = SubResource("GDScript_aeyvs")
-
 [node name="CanvasLayer" parent="." instance=ExtResource("10_y1lmt")]
-
-[node name="LineEdit" type="LineEdit" parent="."]
-offset_left = -111.0
-offset_top = 4.0
-offset_right = 53.0
-offset_bottom = 51.0
-
-[node name="HTTPRequest" type="HTTPRequest" parent="LineEdit"]
 
 [node name="Overlay" parent="." instance=ExtResource("10_y1lmt")]
 
 [node name="WorldGeneration" type="Node" parent="."]
 script = ExtResource("3_blpld")
 
+[node name="HTTPRequest" type="HTTPRequest" parent="WorldGeneration"]
+
 [node name="OpenAI" parent="." instance=ExtResource("13_o2w3d")]
 
-[connection signal="pressed" from="NextLevelButton" to="GameManager" method="_on_next_level_button_pressed"]
 [connection signal="child_entered_tree" from="CanvasLayer" to="Player" method="_on_canvas_layer_child_entered_tree"]
-[connection signal="focus_entered" from="LineEdit" to="WorldGeneration" method="_on_line_edit_focus_entered"]
-[connection signal="text_submitted" from="LineEdit" to="WorldGeneration" method="_on_line_edit_text_submitted"]
-[connection signal="request_completed" from="LineEdit/HTTPRequest" to="WorldGeneration" method="_on_http_request_request_completed"]
+[connection signal="request_completed" from="WorldGeneration/HTTPRequest" to="WorldGeneration" method="_on_http_request_request_completed"]

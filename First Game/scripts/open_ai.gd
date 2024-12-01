@@ -166,7 +166,7 @@ func categorize(input: String):
 				"properties": {
 					"action": {
 						"type": "string",
-						"enum": ["shoot", "build", "spawn", "gameplay", "none"],
+						"enum": ["shoot", "build", "spawn", "gameplay", "next level", "none"],
 					}
 				},
 				"required": ["action"]
