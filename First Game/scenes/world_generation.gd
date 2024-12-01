@@ -5,6 +5,7 @@ signal request_completed(response_data)
 @onready var line_edit: LineEdit = $"../LineEdit"
 @onready var http_request: HTTPRequest = $"../LineEdit/HTTPRequest"
 @onready var GameManager: Node = %GameManager
+@onready var player: CharacterBody2D = $"../Player"
 
 const coinPath = preload("res://scenes/gen_coin.tscn")
 const enemyPath = preload("res://scenes/slime.tscn")
@@ -219,26 +220,20 @@ func _on_world_request_completed(message: Array) -> void:
 	var result = self.closest_match(message)
 	if result[0] == 0 and result[1] < .5:
 		# add more coins
-		print("adding more coins")
-		
 		var coins_node = get_parent().get_node("Coins")
 		if coins_node == null:
 			print("Error: 'Coins' node not found!")
 			return
-			
-		var coin = coinPath.instantiate()
-		coin.connect("collected", Callable(self, "_on_collected"))
-		coins_node.add_child(coin)
-		#print("children of coins: ", coins_node.get_children())
-		var children = get_parent().get_children()
-		#print("children of parent: ", children)
+		for i in range(25):
+			var coin = coinPath.instantiate()
+			coin.position = Vector2(randf_range(15, 1000), randf_range(-100, 120))
+			coin.connect("collected", Callable(self, "_on_collected"))
+			coins_node.add_child(coin)
 	if result[0] == 1 and result[1] < .5:
 		# add more slimes
 		print("adding more slimes")
 		var enemy = enemyPath.instantiate()
 		get_parent().add_child.call_deferred(enemy)
-		var children = get_parent().get_children()
-		print("children of parent from slimes: ", children)
 	if result[0] == 2 and result[1] < .5:
 		# add more platforms
 		print("adding more platforms")
