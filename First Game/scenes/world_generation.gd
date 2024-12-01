@@ -4,6 +4,7 @@ signal request_completed(response_data)
 
 @onready var line_edit: LineEdit = $"../LineEdit"
 @onready var http_request: HTTPRequest = $"../LineEdit/HTTPRequest"
+@onready var GameManager: Node = %GameManager
 
 const coinPath = preload("res://scenes/gen_coin.tscn")
 const enemyPath = preload("res://scenes/slime.tscn")
@@ -210,6 +211,8 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 
 #### world request ####
 
+func _on_collected():
+	GameManager.add_point()
 		
 func _on_world_request_completed(message: Array) -> void:
 	print("on world request completed")	
@@ -224,6 +227,7 @@ func _on_world_request_completed(message: Array) -> void:
 			return
 			
 		var coin = coinPath.instantiate()
+		coin.connect("collected", Callable(self, "_on_collected"))
 		coins_node.add_child(coin)
 		#print("children of coins: ", coins_node.get_children())
 		var children = get_parent().get_children()

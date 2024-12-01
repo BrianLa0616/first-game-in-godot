@@ -15,6 +15,7 @@ var url = "https://api.openai.com/v1/chat/completions"
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	overlay.connect("request_completed", Callable(self, "_on_request_completed"))
+
 	if (SceneSwitcher.scenePrompt != null):
 		print("calling world request completed")
 		WorldGeneration._on_world_request_completed(SceneSwitcher.scenePrompt)
