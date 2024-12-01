@@ -47,10 +47,14 @@ func _on_categorization_completed(message: Array) -> void:
 		"build":
 			print("a")
 		"spawn":
+			message = await open_ai.parse_slime(original_input)
+			output = message[0]
+			var size = output[0]
+			var x = output[1]
+			var y = output[2]
 			var enemy = enemyPath.instantiate()
-			print(player.global_position)
-			enemy.global_position = player.global_position + Vector2(10, -10)
-			print(type_string(typeof(player.global_position)))
+			enemy.global_position = player.global_position + Vector2(x, y)
+			enemy.get_node("AnimatedSprite2D").scale = Vector2(size, size)
 			get_parent().add_child(enemy)
 		"gameplay":
 			print("c")
@@ -61,7 +65,7 @@ func _on_categorization_completed(message: Array) -> void:
 
 func get_image_path(object):
 	var path = ""
-	const image_paths = ["res://assets/sprites/fire.webp", "res://assets/sprites/ice.webp", "res://assets/sprites/thunder.webp"]
+	const image_paths = ["res://assets/sprites/fire.webp", "res://assets/sprites/ice.webp", "res://assets/sprites/thunder.webp", "res://assets/sprites/bullet.png", "res://assets/sprites/spike.png"]
 	var result = await open_ai.closest_match(object)
 	path = image_paths[result[0]]
 	return path

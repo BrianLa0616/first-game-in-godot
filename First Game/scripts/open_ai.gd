@@ -4,6 +4,8 @@ extends Node
 @onready var generation_request: HTTPRequest = $GenerationRequest
 @onready var categorize_request: HTTPRequest = $CategorizeRequest
 @onready var shoot_request: HTTPRequest = $ShootRequest
+@onready var key_request: HTTPRequest = $KeyRequest
+@onready var slime_request: HTTPRequest = $SlimeRequest
 
 signal generation_completed(response_data)
 signal categorization_completed(response_data)
@@ -218,6 +220,141 @@ func parse_shoot(input: String):
 					"speed": {
 						"type": "integer",
 						"default": 300
+					},
+					#"number": {
+						#"type": "integer",
+						#"default": 1
+					#}
+				},
+				"required": ["projectile", "speed"],
+			}
+		}
+	}]
+
+	var request_body = JSON.new().stringify({
+		"model": "gpt-4o",  # Change to "gpt-4" if desired
+		"messages": [
+			{"role": "user", "content": "Parse the user input to shoot something. Always use function calling.\n" + input}
+		],
+		"temperature": 0.7,
+		"tools": tools
+	})
+
+	var headers = [
+		"Content-Type: application/json",
+		"Authorization: Bearer " + API_KEY
+	]
+	var request_result = await shoot_request.request(url, headers, HTTPClient.METHOD_POST, request_body)
+	if request_result == OK:
+		var signal_response = await shoot_request.request_completed
+		return process_shoot_response(signal_response)
+	
+	print("Shooting not properly parsed")
+	return []
+	
+func process_shoot_response(signal_response: Array):
+	var result: int = signal_response[0]
+	var response_code: int = signal_response[1]
+	var headers: PackedStringArray = signal_response[2]
+	var body: PackedByteArray = signal_response[3]
+	var json = JSON.new()
+	json.parse(body.get_string_from_utf8())
+	var response = json.get_data()
+	var tool_call = response["choices"][0]["message"]["tool_calls"][0]
+	var arguments = tool_call['function']['arguments']
+	json.parse(arguments)
+	arguments = json.get_data()
+	print(arguments)
+	var projectile = arguments["projectile"]
+	var speed = arguments["speed"]
+	#var number = arguments["number"]
+	var message = [projectile, speed]
+	return  [message, original_input]
+	
+func parse_slime(input: String):
+	original_input = input
+	const tools = [{
+		"type": "function",
+		"function": {
+			"name": "handle_slime_properties",
+			"description": "Handles slime properties based on input. Always returns the size of the slime and distance from center. Positive x is to the right, positive y is to the bottom. A noticable position shift is around 20",
+			"parameters": {
+				"type": "object",
+				"properties": {
+					"size": {
+						"type": "integer",
+						"default": 1
+					},
+					"x": {
+						"type": "integer",
+						"default": 0
+					},
+					"y": {
+						"type": "integer",
+						"default": 0
+					}
+				},
+				"required": ["size", "x", "y"]
+			}
+		}
+	}]
+
+	var request_body = JSON.new().stringify({
+		"model": "gpt-4o",  # Change to "gpt-4" if desired
+		"messages": [
+			{"role": "user", "content": "Parse the user input to spawn a slime. Always use function calling.\n" + input}
+		],
+		"temperature": 0,
+		"tools": tools
+	})
+
+	var headers = [
+		"Content-Type: application/json",
+		"Authorization: Bearer " + API_KEY
+	]
+	var request_result = await slime_request.request(url, headers, HTTPClient.METHOD_POST, request_body)
+	if request_result == OK:
+		var signal_response = await slime_request.request_completed
+		return process_slime_response(signal_response)
+	
+	print("Slime not properly parsed")
+	return []
+	
+func process_slime_response(signal_response: Array):
+	var result: int = signal_response[0]
+	var response_code: int = signal_response[1]
+	var headers: PackedStringArray = signal_response[2]
+	var body: PackedByteArray = signal_response[3]
+	var json = JSON.new()
+	json.parse(body.get_string_from_utf8())
+	var response = json.get_data()
+	var tool_call = response["choices"][0]["message"]["tool_calls"][0]
+	var arguments = tool_call['function']['arguments']
+	json.parse(arguments)
+	arguments = json.get_data()
+	var size = arguments.get("size", 1)
+	var x = arguments.get("x", 10)
+	var y = arguments.get("y", 0)
+	var message = [size, x, y]
+	return  [message, original_input]
+	
+func parse_key(input: String):
+	original_input = input
+	const tools = [{
+		"type": "function",
+		"function": {
+			"name": "handle_shooting",
+			"description": "Handles shooting actions based on input. Returns projectile item and its speed",
+			"parameters": {
+				"type": "object",
+				"properties": {
+					"projectile": {
+						"type": "string",
+						"default": "fire"
+					},
+					"speed": {
+						"type": "integer",
+						"default": 300
 					}
 				},
 				"required": ["projectile", "speed"]
@@ -246,7 +383,7 @@ func parse_shoot(input: String):
 	print("Shooting not properly parsed")
 	return []
 	
-func process_shoot_response(signal_response: Array):
+func process_key_response(signal_response: Array):
 	var result: int = signal_response[0]
 	var response_code: int = signal_response[1]
 	var headers: PackedStringArray = signal_response[2]
