@@ -263,7 +263,7 @@ func _on_next_level_button_pressed() -> void:
 	SceneSwitcher.switch_scene(destination_scene_path)
 "
 
-[node name="Game" type="Node2D"]
+[node name="Game2" type="Node2D"]
 script = SubResource("GDScript_8v3eh")
 
 [node name="GameManager" type="Node" parent="."]

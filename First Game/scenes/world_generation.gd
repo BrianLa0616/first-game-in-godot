@@ -1,7 +1,13 @@
 extends Node
 
+signal request_completed(response_data)
+
 @onready var line_edit: LineEdit = $"../LineEdit"
 @onready var http_request: HTTPRequest = $"../LineEdit/HTTPRequest"
+
+const coinPath = preload("res://scenes/gen_coin.tscn")
+const enemyPath = preload("res://scenes/slime.tscn")
+const platformPath = preload("res://scenes/platform.tscn")
 
 var url = "https://api.openai.com/v1/chat/completions"
 var embeddingUrl = "https://api.openai.com/v1/embeddings"
@@ -124,11 +130,11 @@ func _on_http_request_request_completed(result: int, response_code: int, headers
 	#var message = response["choices"][0]["message"]["content"]
 	var message = response["data"][0]["embedding"]
 	#save_world_array(message)
-	emit_signal("world_request_completed", message)
 	
 	var next_game_index = SceneSwitcher.gameNumber + 1
 	var new_scene_path = "res://scenes/game" + str(next_game_index) + ".tscn"
-
+	
+	SceneSwitcher.scenePrompt = message
 	
 	# Switch to the newly created scene
 	SceneSwitcher.switch_scene(new_scene_path)
@@ -200,3 +206,40 @@ func _on_line_edit_focus_entered() -> void:
 
 func _on_line_edit_text_submitted(new_text: String) -> void:
 	pass # Replace with function body.
+
+
+#### world request ####
+
+		
+func _on_world_request_completed(message: Array) -> void:
+	print("on world request completed")	
+	var result = self.closest_match(message)
+	if result[0] == 0 and result[1] < .5:
+		# add more coins
+		print("adding more coins")
+		
+		var coins_node = get_parent().get_node("Coins")
+		if coins_node == null:
+			print("Error: 'Coins' node not found!")
+			return
+			
+		var coin = coinPath.instantiate()
+		coins_node.add_child(coin)
+		#print("children of coins: ", coins_node.get_children())
+		var children = get_parent().get_children()
+		#print("children of parent: ", children)
+	if result[0] == 1 and result[1] < .5:
+		# add more slimes
+		print("adding more slimes")
+		var enemy = enemyPath.instantiate()
+		get_parent().add_child.call_deferred(enemy)
+		var children = get_parent().get_children()
+		print("children of parent from slimes: ", children)
+	if result[0] == 2 and result[1] < .5:
+		# add more platforms
+		print("adding more platforms")
+		for i in range(3):
+			var platform = platformPath.instantiate()
+			get_parent().add_child.call_deferred(platform)
+	if result[0] == 3 and result[1] < .5:
+		pass # add more tiles
