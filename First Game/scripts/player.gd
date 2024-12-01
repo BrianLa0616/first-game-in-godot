@@ -56,12 +56,12 @@ func _physics_process(delta):
 
 	move_and_slide()
 	
-func shoot(imagePath="res://assets/sprites/fire.webp"):
+func shoot(imagePath="res://assets/sprites/fire.webp", speed=300):
 	var projectile = projectilePath.instantiate()
 	projectile.position = $Marker2D.global_position if not animated_sprite.flip_h else $Marker2D2.global_position
 	var direction = Vector2.RIGHT if not animated_sprite.flip_h else Vector2.LEFT
 	projectile.set_direction(direction)
-	
+	projectile.set_speed(speed)
 	var image = load(imagePath)
 	projectile.get_node("Sprite2D").texture = image
 	get_parent().add_child(projectile)

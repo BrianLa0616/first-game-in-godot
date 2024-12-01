@@ -1,12 +1,11 @@
 extends CharacterBody2D
 # Called when the node enters the scene tree for the first time.
 var direction = Vector2(0, 0)
-const speed = 300
+var speed = 300
 var distance_traveled = 0
 
 func _ready() -> void:
 	pass # Replace with function body.
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
@@ -17,5 +16,9 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	pass
 
-func set_direction(dir: Vector2) -> void:
-	direction = dir
+func set_direction(direction: Vector2) -> void:
+	self.direction = direction
+	
+func set_speed(speed) -> void:
+	self.speed = speed
+	

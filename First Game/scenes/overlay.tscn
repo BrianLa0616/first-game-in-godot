@@ -17,7 +17,4 @@ theme = SubResource("Theme_mf56b")
 theme_override_font_sizes/font_size = 25
 theme_override_styles/normal = SubResource("StyleBoxFlat_u4gcp")
 
-[node name="HTTPRequest" type="HTTPRequest" parent="LineEdit"]
-
 [connection signal="text_submitted" from="LineEdit" to="." method="_on_line_edit_text_submitted"]
-[connection signal="request_completed" from="LineEdit/HTTPRequest" to="." method="_on_http_request_request_completed"]
