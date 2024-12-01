@@ -218,6 +218,7 @@ func _on_world_request_completed(message: Array) -> void:
 	print("on world request completed")	
 	var result = self.closest_match(message)
 	if result[0] == 0 and result[1] < .5:
+		print("adding more coins")
 		# add more coins
 		var coins_node = get_parent().get_node("Coins")
 		if coins_node == null:
@@ -228,19 +229,38 @@ func _on_world_request_completed(message: Array) -> void:
 			coin.position = Vector2(randf_range(15, 1000), randf_range(-100, 120))
 			coin.connect("collected", Callable(self, "_on_collected"))
 			coins_node.add_child(coin)
-	if result[0] == 1 and result[1] < .5:
+	elif result[0] == 1 and result[1] < .5:
 		# add more slimes
 		print("adding more slimes")
 		for i in range(20):
 			var enemy = enemyPath.instantiate()
 			enemy.position = Vector2(randf_range(15, 1000), randf_range(-100, 150))
 			get_parent().add_child.call_deferred(enemy)
-	if result[0] == 2 and result[1] < .5:
+	elif result[0] == 2 and result[1] < .5:
 		# add more platforms
 		print("adding more platforms")
 		for i in range(10):
 			var platform = platformPath.instantiate()
 			platform.position = Vector2(randf_range(15, 1000), randf_range(-100, 150))
 			get_parent().add_child.call_deferred(platform)
-	if result[0] == 3 and result[1] < .5:
-		pass # add more tiles
+	elif result[0] == 3 and result[1] < .5:
+		# add a lot more coins
+		print("adding a lot more coins")
+		var coins_node = get_parent().get_node("Coins")
+		if coins_node == null:
+			print("Error: 'Coins' node not found!")
+			return
+		for i in range(100):
+			var coin = coinPath.instantiate()
+			coin.position = Vector2(randf_range(15, 1000), randf_range(-100, 120))
+			coin.connect("collected", Callable(self, "_on_collected"))
+			coins_node.add_child(coin)
+	elif result[0] == 4 and result[1] < .5:
+		# add a lot more slimes
+		print("adding a lot more slimes")
+		for i in range(100):
+			var enemy = enemyPath.instantiate()
+			enemy.position = Vector2(randf_range(15, 1000), randf_range(-100, 150))
+			get_parent().add_child.call_deferred(enemy)
+	else:
+		print("didn't match any choices")

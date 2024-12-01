@@ -224,7 +224,7 @@ _data = {
 "move": SubResource("Animation_bm7kf")
 }
 
-[node name="Game9" type="Node2D"]
+[node name="Game" type="Node2D"]
 script = SubResource("GDScript_8v3eh")
 
 [node name="GameManager" type="Node" parent="."]
