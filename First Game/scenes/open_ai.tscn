@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://bspha5de30na5"]
+
+[ext_resource type="Script" path="res://scripts/open_ai.gd" id="1_44loj"]
+
+[node name="OpenAI" type="Node"]
+script = ExtResource("1_44loj")
+
+[node name="EmbeddingRequest" type="HTTPRequest" parent="."]
+
+[node name="GenerationRequest" type="HTTPRequest" parent="."]
+
+[node name="CategorizeRequest" type="HTTPRequest" parent="."]
+
+[node name="ShootRequest" type="HTTPRequest" parent="."]
+
+[connection signal="request_completed" from="EmbeddingRequest" to="." method="_on_embedding_request_request_completed"]
+[connection signal="request_completed" from="GenerationRequest" to="." method="_on_generation_request_request_completed"]
+[connection signal="request_completed" from="CategorizeRequest" to="." method="_on_categorize_request_request_completed"]
+[connection signal="request_completed" from="ShootRequest" to="." method="_on_shoot_request_request_completed"]
